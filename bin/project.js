@@ -1,0 +1,207 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies
+ */
+
+var fs = require('fs')
+var path = require('path')
+var join = path.join
+var exists = fs.existsSync || path.existsSync
+
+/**
+ * Aliases (hardcoded, TODO: use file)
+ */
+
+var alias = {
+  'node': 'node.js'
+, 'comp': 'component'
+}
+
+/**
+ * Replaces local %vars% in string.
+ *
+ * @param {string} str
+ * @param {object} locals
+ * @return {string}
+ */
+
+function render (str, locals) {
+  locals = merge(locals, render.locals)
+  for (var key in locals) {
+    str = str.replace(new RegExp('%'+key+'%', 'ig'), locals[key])
+  }
+  return str
+}
+
+/**
+ * Read a dir tree.
+ *
+ * @param {string} dirname 
+ * @return {array} dirs
+ */
+
+function readdirtree (dirname, arr) {
+  arr = arr || []
+  
+  fs.readdirSync(dirname)
+    .map(function (file) { return path.join(dirname, file) })
+    .forEach(function (file) {
+      if (fs.statSync(file).isDirectory()) {
+        arr.push(file)
+        readdirtree(file, arr)
+      }
+    })
+
+  return arr
+}
+
+/**
+ * Reads the files from a dir.
+ *
+ * @param {string} dirname 
+ * @return {array} files
+ */
+
+function readdir (dirname, arr) {
+  arr = arr || []
+  
+  fs.readdirSync(dirname)
+    .map(function (file) { return path.join(dirname, file) })
+    .forEach(function (file) {
+      if (fs.statSync(file).isDirectory()) {
+        readdir(file, arr)
+      }
+      else arr.push(file)
+    })
+
+  return arr
+}
+
+/**
+ * Reads a file in sync and returns an object.
+ *
+ * @param {string} filename 
+ * @return {object} file
+ */
+
+function readfile (filename) {
+  return { name: filename, contents: fs.readFileSync(filename, 'utf8') }
+}
+
+// read settings
+
+var settings
+try { settings = require('../settings.json') }
+catch (e) { settings = require('../defaults.json') }
+
+/**
+ * Sets key val pair in settings
+ * and saves it on disk in sync.
+ *
+ * @param {string} key 
+ * @param {string} val 
+ */
+
+function set (key, val) {
+  settings[key] = val
+  var filename = join(__dirname, '..', 'settings.json')
+  var contents = JSON.stringify(settings, null, '  ')
+  fs.writeFileSync(filename, contents, 'utf8')
+  console.log('set %s=%s', key, val)
+}
+
+// read args
+
+var args = process.argv.slice(2)
+
+// find in alias
+
+var type = cmd = args[0]
+type = alias[type] || type
+
+// project name
+
+var name = args[1]
+
+// rest arguments
+
+var rest = args.slice(2)
+
+// project description
+
+var desc = rest.join(' ')
+
+// modify/fetch settings
+
+if ('set' === cmd) {
+  set(name, rest.join(' '))
+  return
+}
+
+if ('get' === cmd) {
+  console.log(settings[name])
+  return
+}
+
+// create project from template
+
+var template = join(__dirname, '..', 'templates', type)
+var target = join(process.cwd(), name)
+
+console.log('creating project "%s"', name)
+console.log('on path : %s', target)
+
+// populate locals
+
+render.locals = {}
+merge(render.locals, settings)
+merge(render.locals, { name: name, desc: desc, project: name })
+
+// make project root
+
+try { fs.mkdirSync(target) } catch(_) {}
+
+// make project dirs
+
+readdirtree(template)
+  .map(function (dirname) {
+    dirname = dirname.substr(template.length + 1)
+    console.log('make dir : %s', dirname)
+    return join(target, dirname)
+  })
+  .forEach(function (dirname) {
+    try { fs.mkdirSync(dirname, 0755) } catch(_) {}
+  })
+
+// make project files
+
+readdir(template)
+  .map(readfile)
+  .forEach(function (file) {
+    var filename = file.name.substr(template.length + 1)
+    filename = filename
+    filename = render(filename)
+    file.contents = render(file.contents)
+    console.log('write file : %s', filename)
+    fs.writeFileSync(join(target, filename), file.contents, 'utf8')
+  })
+
+/**
+ * Merge two objects.
+ *
+ * @param {object} t 
+ * @param {object} s 
+ * @return {object} t
+ */
+
+function merge (t, s) {
+  t = t || {}
+  s = s || {}
+  for (var k in s) {
+    if (s.hasOwnProperty(k)) {
+      t[k] = s[k]
+    }
+  }
+  return t
+}

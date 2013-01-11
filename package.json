@@ -1,0 +1,9 @@
+{
+  "name": "project",
+  "version": "0.1.0",
+  "description": "create projects",
+  "author": "stagas",
+  "licence": "MIT",
+  "bin": "bin/project.js",
+  "engines": { "node": "*" }
+}
