@@ -9,4 +9,16 @@
 
 `project node awesome`
 
-`project component tooltip`
+`project component tooltip a different kind of tooltip`
+
+## changing defaults
+
+`project set author stagas`
+
+`project set licence MIT`
+
+_(uses ~/project.json)_
+
+## Licence
+
+MIT
