@@ -28,9 +28,9 @@ var alias = {
 
 function render (str, locals) {
   locals = merge(locals, render.locals)
-  for (var key in locals) {
-    str = str.replace(new RegExp('%'+key+'%', 'ig'), locals[key])
-  }
+  str = str.replace(/%([_a-z0-9]*)%/gi, function (_, key) {
+    return locals[key] || ''
+  })
   return str
 }
 
@@ -91,8 +91,10 @@ function readfile (filename) {
 
 // read settings
 
+var isWindows = process.platform === 'win32'
+var home = isWindows ? process.env.USERPROFILE : process.env.HOME
 var settings
-try { settings = require('../settings.json') }
+try { settings = require(home+'/settings.json') }
 catch (e) { settings = require('../defaults.json') }
 
 /**
@@ -105,10 +107,10 @@ catch (e) { settings = require('../defaults.json') }
 
 function set (key, val) {
   settings[key] = val
-  var filename = join(__dirname, '..', 'settings.json')
+  var filename = join(home, 'settings.json')
   var contents = JSON.stringify(settings, null, '  ')
   fs.writeFileSync(filename, contents, 'utf8')
-  console.log('set %s=%s', key, val)
+  console.log('set "%s" to "%s"', key, val)
 }
 
 // read args
