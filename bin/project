@@ -94,7 +94,7 @@ function readfile (filename) {
 var isWindows = process.platform === 'win32'
 var home = isWindows ? process.env.USERPROFILE : process.env.HOME
 var settings
-try { settings = require(home+'/settings.json') }
+try { settings = require(home+'/project.json') }
 catch (e) { settings = require('../defaults.json') }
 
 /**
@@ -107,7 +107,7 @@ catch (e) { settings = require('../defaults.json') }
 
 function set (key, val) {
   settings[key] = val
-  var filename = join(home, 'settings.json')
+  var filename = join(home, 'project.json')
   var contents = JSON.stringify(settings, null, '  ')
   fs.writeFileSync(filename, contents, 'utf8')
   console.log('set "%s" to "%s"', key, val)

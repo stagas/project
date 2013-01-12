@@ -1,4 +1,8 @@
 
 # %name%
 
-Licence %licence%
+%desc%
+
+## Licence
+
+%licence%

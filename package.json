@@ -4,6 +4,6 @@
   "description": "create projects",
   "author": "stagas",
   "licence": "MIT",
-  "bin": "bin/project.js",
+  "bin": "bin/project",
   "engines": { "node": "*" }
 }
