@@ -4,7 +4,7 @@
   "description": "%desc%",
   "keywords": [],
   "author": "%author%",
-  "licence": "%licence%",
+  "license": "%license%",
   "main": "index.js",
   "engines": { "node": "*" }
 }

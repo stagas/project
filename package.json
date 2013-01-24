@@ -3,7 +3,7 @@
   "version": "0.1.3",
   "description": "create projects",
   "author": "stagas",
-  "licence": "MIT",
+  "license": "MIT",
   "bin": "bin/project",
   "engines": { "node": "*" }
 }

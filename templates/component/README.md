@@ -3,6 +3,6 @@
 
 %desc%
 
-## Licence
+## License
 
-%licence%
+%license%

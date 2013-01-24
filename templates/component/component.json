@@ -4,6 +4,6 @@
   "description": "%desc%",
   "keywords": [],
   "author": "%author%",
-  "licence": "%licence%",
+  "license": "%license%",
   "scripts": ["index.js"]
 }
