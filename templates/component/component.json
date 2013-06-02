@@ -5,5 +5,7 @@
   "keywords": [],
   "author": "%author%",
   "license": "%license%",
+  "dependencies": {},
+  "development": {},
   "scripts": ["index.js"]
 }

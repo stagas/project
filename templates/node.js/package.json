@@ -6,5 +6,7 @@
   "author": "%author%",
   "license": "%license%",
   "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
   "engines": { "node": "*" }
 }
