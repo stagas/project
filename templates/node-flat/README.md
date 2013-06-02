@@ -1,0 +1,8 @@
+
+# %name%
+
+%desc%
+
+## License
+
+%license%

@@ -1,0 +1,10 @@
+{
+  "name": "%name%",
+  "version": "0.0.1",
+  "description": "%desc%",
+  "keywords": [],
+  "author": "%author%",
+  "license": "%license%",
+  "main": "index.js",
+  "engines": { "node": "*" }
+}
