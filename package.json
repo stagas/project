@@ -5,5 +5,9 @@
   "author": "stagas",
   "license": "MIT",
   "bin": "bin/project",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stagas/project.git"
+  },
   "engines": { "node": "*" }
 }
